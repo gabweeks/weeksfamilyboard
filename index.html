@@ -15,7 +15,7 @@
   }
 
   .top {
-    padding: 15px 0;
+    padding: 20px 0 10px;
   }
 
   .profile {
@@ -27,25 +27,19 @@
     margin-bottom: 10px;
   }
 
-  h1 { margin: 0; }
+  h1 {
+    margin: 0;
+    font-size: 20px;
+  }
 
   canvas {
+    width: 90%;
+    max-width: 400px;
+    height: 200px;
     background: #020617;
     border: 1px solid #334155;
     margin-top: 15px;
     touch-action: none;
-  }
-
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
-    padding: 20px;
-  }
-
-  .item {
-    background: #020617;
-    border: 1px solid #334155;
   }
 
   button {
@@ -56,28 +50,40 @@
     background: white;
     cursor: pointer;
   }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    padding: 20px;
+  }
+
+  .item {
+    width: 100%;
+    border-radius: 8px;
+  }
 </style>
 </head>
 
 <body>
 
 <div class="top">
-  <img class="profile" src="https://instagram.fplu19-1.fna.fbcdn.net/v/t51.2885-19/346576795_1163680270967983_5337571337711107352_n.jpg">
+  <!-- cache-buster na imagem -->
+  <img class="profile" src="https://i.imgur.com/KtZUDki.jpeg?v=2">
   <h1>Marque sua presença na família Weeks :)</h1>
 </div>
 
-<canvas id="canvas" width="300" height="150"></canvas>
+<canvas id="canvas"></canvas>
 <br>
 <button onclick="saveDrawing()">Salvar assinatura</button>
 
 <div class="gallery" id="gallery"></div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<!-- Firebase v8 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <script>
-// 🔴 COLE SUA CONFIG DO FIREBASE AQUI
 const firebaseConfig = {
   apiKey: "AIzaSyAMF2Bw5Moe4YbwgxDSmgL_YWY-DtSiTXE",
   authDomain: "weeksfamilyboard.firebaseapp.com",
@@ -88,47 +94,61 @@ const firebaseConfig = {
   measurementId: "G-93QYW4DJR7"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+canvas.width = 400;
+canvas.height = 200;
+
 let drawing = false;
 
-canvas.addEventListener("mousedown", () => drawing = true);
-canvas.addEventListener("mouseup", () => drawing = false);
-canvas.addEventListener("mousemove", draw);
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
+    y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+  };
+}
 
-canvas.addEventListener("touchstart", () => drawing = true);
-canvas.addEventListener("touchend", () => drawing = false);
-canvas.addEventListener("touchmove", draw);
+function start() {
+  drawing = true;
+  ctx.beginPath();
+}
+
+function end() {
+  drawing = false;
+}
 
 function draw(e) {
   if (!drawing) return;
 
-  const rect = canvas.getBoundingClientRect();
-  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-  const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+  const pos = getPos(e);
 
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
   ctx.strokeStyle = "white";
 
-  ctx.lineTo(x, y);
+  ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x, y);
 }
+
+canvas.addEventListener("mousedown", start);
+canvas.addEventListener("mouseup", end);
+canvas.addEventListener("mousemove", draw);
+
+canvas.addEventListener("touchstart", start);
+canvas.addEventListener("touchend", end);
+canvas.addEventListener("touchmove", draw);
 
 function saveDrawing() {
   const dataURL = canvas.toDataURL();
-
   db.collection("signatures").add({ image: dataURL });
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-// CARREGAR EM TEMPO REAL
 db.collection("signatures").onSnapshot(snapshot => {
   const gallery = document.getElementById("gallery");
   gallery.innerHTML = "";
