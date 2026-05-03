@@ -1,3 +1,146 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="image" href="/imagemfamilia.jpg"/><link rel="stylesheet" href="/assets/index-CoAWbyhG.css" type="text/css" data-precedence="default"/><title>Família Weeks — Mural de Assinaturas</title><meta name="description" content="Marque sua presença na família Weeks :)"/><meta name="theme-color" content="#0d0d10"/><link rel="modulepreload" href="/assets/index-hN_5xusV.js"/><link rel="modulepreload" href="/assets/index-uGw09a6f.js"/></head><body style="margin:0;padding:0;background:#0d0d10;overflow:hidden"><!--$--><div class="flex flex-col h-screen bg-[#0d0d10] text-white overflow-hidden"><header class="flex-none px-6 pt-6 pb-4 text-center"><img src="/imagemfamilia.jpg" alt="Família Weeks" class="mx-auto mb-4 h-24 w-24 rounded-full border-2 border-white/80 object-cover shadow-md"/><h1 class="text-xl sm:text-2xl font-light tracking-wide text-white/90" style="font-family:&#x27;Georgia&#x27;, serif;letter-spacing:0.04em">Marque sua presença na família Weeks :)</h1><p class="mt-1 text-xs text-white/35 tracking-widest uppercase">0<!-- --> <!-- -->assinaturas</p></header><div class="flex-1 overflow-auto px-2 pb-2" style="min-height:0"><div class="flex items-center justify-center h-full opacity-20 text-sm text-white/50 tracking-widest uppercase">Seja o primeiro a assinar</div></div><div class="flex-none border-t border-white/10 bg-[#111115]"><div class="px-4 pt-3 pb-4"><div class="flex items-center justify-between mb-2"><span class="text-[10px] text-white/30 uppercase tracking-widest">Sua assinatura</span></div><canvas class="block w-full rounded-sm cursor-crosshair touch-none" style="height:140px;background:#0d0d10;border:1px solid rgba(255,255,255,0.08)"></canvas><button disabled="" class="mt-3 w-full py-2.5 rounded-full text-sm font-light tracking-wide transition-all
-                disabled:opacity-25 disabled:cursor-not-allowed
-                enabled:bg-white enabled:text-[#0d0d10] enabled:hover:bg-white/90">Deixar minha marca</button></div></div></div><script>(function(t){let s;try{s=JSON.parse(sessionStorage.getItem(t.storageKey)||"{}")}catch(e){console.error(e);return}const c=t.key||window.history.state?.__TSR_key,r=c?s[c]:void 0;if(t.shouldScrollRestoration&&r&&typeof r=="object"&&Object.keys(r).length>0){for(const e in r){const o=r[e];if(!o||typeof o!="object")continue;const l=o.scrollX,i=o.scrollY;if(!(!Number.isFinite(l)||!Number.isFinite(i))){if(e==="window")window.scrollTo({top:i,left:l,behavior:t.behavior});else if(e){let n;try{n=document.querySelector(e)}catch{continue}n&&(n.scrollLeft=l,n.scrollTop=i)}}}return}const a=window.location.hash.split("#",2)[1];if(a){const e=window.history.state?.__hashScrollIntoViewOptions??!0;if(e){const o=document.getElementById(a);o&&o.scrollIntoView(e)}return}window.scrollTo({top:0,left:0,behavior:t.behavior})})({"storageKey":"tsr-scroll-restoration-v1_3","shouldScrollRestoration":true});document.currentScript.remove()</script><!--/$--><script class="$tsr" id="$tsr-stream-barrier">(self.$R=self.$R||{})["tsr"]=[];self.$_TSR={h(){this.hydrated=!0,this.c()},e(){this.streamEnded=!0,this.c()},c(){this.hydrated&&this.streamEnded&&(delete self.$_TSR,delete self.$R.tsr)},p(e){this.initialized?e():this.buffer.push(e)},buffer:[]};$_TSR.router=($R=>$R[0]={manifest:$R[1]={routes:$R[2]={__root__:$R[3]={preloads:$R[4]=["/assets/index-hN_5xusV.js"],assets:$R[5]=[$R[6]={tag:"link",attrs:$R[7]={rel:"stylesheet",href:"/assets/index-CoAWbyhG.css",type:"text/css"}},$R[8]={tag:"script",attrs:$R[9]={type:"module",async:!0},children:"import(\"/assets/index-hN_5xusV.js\")"}]},"/":$R[10]={preloads:$R[11]=["/assets/index-uGw09a6f.js"]}}},matches:$R[12]=[$R[13]={i:"__root__",u:1777838922291,s:"success",ssr:!0},$R[14]={i:"",u:1777838922291,s:"success",ssr:!0}],lastMatchId:""})($R["tsr"]);$_TSR.e();document.currentScript.remove()</script><script type="module" async="">import("/assets/index-hN_5xusV.js")</script></body></html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weeks Family Board</title>
+
+<style>
+  body {
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
+
+  .top {
+    padding: 15px 0;
+  }
+
+  .profile {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+
+  h1 { margin: 0; }
+
+  canvas {
+    background: #020617;
+    border: 1px solid #334155;
+    margin-top: 15px;
+    touch-action: none;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+    padding: 20px;
+  }
+
+  .item {
+    background: #020617;
+    border: 1px solid #334155;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="top">
+  <img class="profile" src="https://instagram.fplu19-1.fna.fbcdn.net/v/t51.2885-19/346576795_1163680270967983_5337571337711107352_n.jpg">
+  <h1>Marque sua presença na família Weeks :)</h1>
+</div>
+
+<canvas id="canvas" width="300" height="150"></canvas>
+<br>
+<button onclick="saveDrawing()">Salvar assinatura</button>
+
+<div class="gallery" id="gallery"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+<script>
+// 🔴 COLE SUA CONFIG DO FIREBASE AQUI
+const firebaseConfig = {
+  apiKey: "AIzaSyAMF2Bw5Moe4YbwgxDSmgL_YWY-DtSiTXE",
+  authDomain: "weeksfamilyboard.firebaseapp.com",
+  projectId: "weeksfamilyboard",
+  storageBucket: "weeksfamilyboard.firebasestorage.app",
+  messagingSenderId: "91920356874",
+  appId: "1:91920356874:web:371f0f0bb3d948379ff1f3",
+  measurementId: "G-93QYW4DJR7"
+};
+
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let drawing = false;
+
+canvas.addEventListener("mousedown", () => drawing = true);
+canvas.addEventListener("mouseup", () => drawing = false);
+canvas.addEventListener("mousemove", draw);
+
+canvas.addEventListener("touchstart", () => drawing = true);
+canvas.addEventListener("touchend", () => drawing = false);
+canvas.addEventListener("touchmove", draw);
+
+function draw(e) {
+  if (!drawing) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "white";
+
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+}
+
+function saveDrawing() {
+  const dataURL = canvas.toDataURL();
+
+  db.collection("signatures").add({ image: dataURL });
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// CARREGAR EM TEMPO REAL
+db.collection("signatures").onSnapshot(snapshot => {
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    const img = document.createElement("img");
+    img.src = doc.data().image;
+    img.className = "item";
+    gallery.appendChild(img);
+  });
+});
+</script>
+
+</body>
+</html>
