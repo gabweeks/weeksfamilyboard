@@ -6,80 +6,60 @@
 <title>Weeks Family Board</title>
 
 <style>
-  body {
-    margin: 0;
-    background: #0f172a;
-    color: white;
-    font-family: Arial, sans-serif;
-    text-align: center;
-  }
+  body { margin:0; background:#0f172a; color:white; font-family:Arial, sans-serif; text-align:center; }
+  .top { padding:20px 0 10px; }
+  .profile { width:100px; height:100px; border-radius:50%; border:3px solid white; object-fit:cover; margin-bottom:10px; }
+  h1 { margin:0; font-size:20px; }
 
-  .top {
-    padding: 20px 0 10px;
-  }
-
-  .profile {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    border: 3px solid white;
-    object-fit: cover;
-    margin-bottom: 10px;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: 20px;
-  }
+  .instructions { margin-top:10px; opacity:0.8; font-size:14px; }
 
   canvas {
-    width: 90%;
-    max-width: 400px;
-    height: 200px;
-    background: #020617;
-    border: 1px solid #334155;
-    margin-top: 15px;
-    touch-action: none;
+    width:90%; max-width:400px; height:200px;
+    background:#020617; border:1px solid #334155;
+    margin-top:15px; touch-action:none;
   }
 
+  .controls { margin-top:10px; }
+
   button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    background: white;
-    cursor: pointer;
+    margin:5px; padding:10px 15px;
+    border:none; border-radius:8px;
+    background:white; cursor:pointer;
   }
 
   .gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
-    padding: 20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+    gap:10px; padding:20px;
   }
 
-  .item {
-    width: 100%;
-    border-radius: 8px;
-  }
+  .item { width:100%; border-radius:8px; }
 </style>
 </head>
 
 <body>
 
 <div class="top">
-  <!-- cache-buster na imagem -->
   <img class="profile" src="https://i.imgur.com/KtZUDki.jpeg?v=2">
   <h1>Marque sua presença na família Weeks :)</h1>
+
+  <div class="instructions">
+    Assinar seu nome ✍️<br>
+    Salvar assinatura 💾<br>
+    Presença marcada! ✅
+  </div>
 </div>
 
 <canvas id="canvas"></canvas>
-<br>
-<button onclick="saveDrawing()">Salvar assinatura</button>
+
+<div class="controls">
+  <button onclick="undo()">⬅️ Voltar</button>
+  <button onclick="redo()">➡️ Refazer</button>
+  <button onclick="saveDrawing()">Salvar assinatura</button>
+</div>
 
 <div class="gallery" id="gallery"></div>
 
-<!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
@@ -99,64 +79,102 @@ const db = firebase.firestore();
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-
-canvas.width = 400;
-canvas.height = 200;
+canvas.width = 400; canvas.height = 200;
 
 let drawing = false;
+let strokes = [];
+let redoStack = [];
+let currentStroke = [];
 
-function getPos(e) {
+function getPos(e){
   const rect = canvas.getBoundingClientRect();
   return {
-    x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left,
-    y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+    x:(e.touches?e.touches[0].clientX:e.clientX)-rect.left,
+    y:(e.touches?e.touches[0].clientY:e.clientY)-rect.top
   };
 }
 
-function start() {
+function start(e){
+  e.preventDefault();
   drawing = true;
-  ctx.beginPath();
+  currentStroke = [];
 }
 
-function end() {
+function end(){
+  if(drawing && currentStroke.length > 1){
+    strokes.push(currentStroke);
+    redoStack = [];
+  }
   drawing = false;
 }
 
-function draw(e) {
-  if (!drawing) return;
-
+function draw(e){
+  if(!drawing) return;
+  e.preventDefault();
   const pos = getPos(e);
+  currentStroke.push(pos);
+  redraw();
+}
 
+function redraw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.lineWidth = 2;
   ctx.lineCap = "round";
   ctx.strokeStyle = "white";
 
-  ctx.lineTo(pos.x, pos.y);
-  ctx.stroke();
+  const all = strokes.concat(currentStroke.length ? [currentStroke] : []);
+
+  all.forEach(stroke => {
+    ctx.beginPath();
+    stroke.forEach((p,i)=>{
+      if(i===0) ctx.moveTo(p.x,p.y);
+      else ctx.lineTo(p.x,p.y);
+    });
+    ctx.stroke();
+  });
 }
 
-canvas.addEventListener("mousedown", start);
-canvas.addEventListener("mouseup", end);
-canvas.addEventListener("mousemove", draw);
+function undo(){
+  if(currentStroke.length > 0){
+    currentStroke = [];
+  } else if(strokes.length > 0){
+    redoStack.push(strokes.pop());
+  }
+  redraw();
+}
 
-canvas.addEventListener("touchstart", start);
-canvas.addEventListener("touchend", end);
-canvas.addEventListener("touchmove", draw);
+function redo(){
+  if(redoStack.length > 0){
+    strokes.push(redoStack.pop());
+    redraw();
+  }
+}
 
-function saveDrawing() {
+canvas.addEventListener("mousedown",start);
+canvas.addEventListener("mouseup",end);
+canvas.addEventListener("mouseleave",end);
+canvas.addEventListener("mousemove",draw);
+
+canvas.addEventListener("touchstart",start);
+canvas.addEventListener("touchend",end);
+canvas.addEventListener("touchcancel",end);
+canvas.addEventListener("touchmove",draw,{ passive:false });
+
+function saveDrawing(){
   const dataURL = canvas.toDataURL();
-  db.collection("signatures").add({ image: dataURL });
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  db.collection("signatures").add({ image:dataURL });
+  strokes = []; redoStack = []; currentStroke = [];
+  ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
-db.collection("signatures").onSnapshot(snapshot => {
-  const gallery = document.getElementById("gallery");
-  gallery.innerHTML = "";
-
-  snapshot.forEach(doc => {
-    const img = document.createElement("img");
-    img.src = doc.data().image;
-    img.className = "item";
+// realtime
+ db.collection("signatures").onSnapshot(snapshot=>{
+  const gallery=document.getElementById("gallery");
+  gallery.innerHTML="";
+  snapshot.forEach(doc=>{
+    const img=document.createElement("img");
+    img.src=doc.data().image;
+    img.className="item";
     gallery.appendChild(img);
   });
 });
